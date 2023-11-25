@@ -3,27 +3,26 @@ import math
 class Controller:
 
     def __init__(self):
-        ke = 0.0
-        Ku = []
-        U = 0.0
-        du = []
+        self.ke = 0.0
+        self.Ku = []
+        self.U = 0.0
+        self.du = []
+        self.Tp = min(Tc)
+        self.Hd_maks = int(max(Hd))
 
-    def parameterize(self, ext_ke, ext_ku, act_cv):
-        self.ke = ext_ke
-        self.U = act_cv
-        for i in range(0, len(ext_ku)):
-            self.Ku.append(ext_ku[i])
-            self.du.append(0.0)
+    def parameterize(self, flow_rate):
+        prev, neks = self.find_me( flow_rate)  ## Szukam przedziału w którym znajduje się przepływ
+        self.ke = self.linear_interpolation( prev, neks, ke[prev], ke[neks], flow_rate )
+        for i in range(0,self.Hd_maks-1):
+            self.Ku.append(self.linear_interpolation( prev, neks, Ku[prev][i], Ku[neks][i], flow_rate))
         return 0
 
     def calc_U(Contr, ext_e):
         sum = 0.0
-
         for i in range(0, len(Contr.Ku)):
             sum = sum + Contr.Ku[i] * Contr.du[i]
         du = float(Contr.ke) * (ext_e) - sum
         U = Contr.U + du
-
         if U > 100.0:
             U = 100.0
         if U < 15.0:
@@ -52,7 +51,6 @@ class Controller:
         ind1 = dist.index(min(dist))
         dist[ind1]=max(dist)*100
         ind2 = dist.index(min(dist))
-
         if ind1 < ind2:
             prev = ind1
             neks = ind2
@@ -62,8 +60,10 @@ class Controller:
         return prev, neks
 
 if __name__ == "__main__":
-    flow_rate = 2.2
-    Controller1 = Controller
-    prev, neks = Controller1.find_me(Controller1,flow_rate)
-    value = Controller1.linear_interpolation(Controller1, prev, neks, ke[prev], ke[neks], flow_rate)
-    print(value)
+    flow_rate = 4.7
+    Controller1 = Controller()
+    Controller1.parameterize(flow_rate)
+    print(Controller1.ke)
+    print(Controller1.Ku)
+    print(Controller1.Tp)
+
