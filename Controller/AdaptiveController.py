@@ -41,9 +41,9 @@ class Controller:
         self.du.clear()
         return 0
 
-    def linear_interpolation(self, prev , neks, interp):
-
-        return 0
+    def linear_interpolation(self, prev, neks, prev_value, neks_value, flow_rate):
+        value = prev_value + ((neks_value-prev_value)/(F[neks]-F[prev]))*(flow_rate-F[prev])
+        return value
 
     def find_me(self, flow_rate):           ##Szukanie przedziału przepływu
         dist=[]
@@ -62,5 +62,8 @@ class Controller:
         return prev, neks
 
 if __name__ == "__main__":
+    flow_rate = 2.2
     Controller1 = Controller
-    prev, neks = Controller1.find_me(Controller1,2.2)
+    prev, neks = Controller1.find_me(Controller1,flow_rate)
+    value = Controller1.linear_interpolation(Controller1, prev, neks, ke[prev], ke[neks], flow_rate)
+    print(value)
