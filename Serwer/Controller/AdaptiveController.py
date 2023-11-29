@@ -1,6 +1,6 @@
 from RegulatorParametersContainer import *
 import math
-class Controller:
+class AdaptiveController:
 
     def __init__(self):
         self.ke = 0.0
@@ -60,8 +60,8 @@ class Controller:
         return prev, neks
 
 if __name__ == "__main__":
-    flow_rate = 4.7
-    Controller1 = Controller()
+    flow_rate = 1.5
+    Controller1 = AdaptiveController()
     Controller1.parameterize(flow_rate)
     print(Controller1.ke)
     print(Controller1.Ku)

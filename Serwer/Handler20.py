@@ -1,10 +1,10 @@
 import socket
-import struct
 from Serwer_Param import *
-from ParametryzacjaRegulatora import *
-from FOPDT import *
-from DMCV2 import *
-from Controller import *
+from Serwer.Controller.ParametryzacjaRegulatora import *
+from Serwer.Controller.FOPDT import *
+from Serwer.Controller.DMCV2 import *
+from Serwer.Controller.Controller import *
+from Serwer.Controller.AdaptiveController import *
 
 
 
@@ -17,7 +17,8 @@ data = []
 msg = []
 value_of_jump = 0.0
 if_parametrized = 0
-DMC_contr = Controller
+DMC_contr = Controller()
+AdaptiveDMC_contr = AdaptiveController()
 
 #Tworzenie gniazda serwera
 s = socket.socket()
@@ -81,12 +82,12 @@ while True:
                     returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
                     msg = []
                     c.send(returnmsg)
-                    DMC_contr.clear_contr(DMC_contr)
+                    DMC_contr.clear_contr()
                     print("Wartości ku oraz Ke zostały wyznaczone poprawnie")
                     if_parametrized = 0
                 case 4.0:   # Wyznaczanie sterowania
                     if if_parametrized == 0:
-                        DMC_contr.parameterize(DMC_contr, ke[0], Ku, Sample[1])
+                        DMC_contr.parameterize(ke[0], Ku, Sample[1])
                         print("Ragulator został sparametryzowany poprawnie")
                         if_parametrized = 1
                         msg.append(40)
@@ -96,7 +97,7 @@ while True:
                         msg = []
                         c.send(returnmsg)
                     else:
-                        u_i = DMC_contr.calc_U(DMC_contr, Sample[3]-Sample[2])
+                        u_i = DMC_contr.calc_U(Sample[3]-Sample[2])
                         msg.append(40)
                         msg.append(u_i)
                         msg_size = len(msg)
@@ -104,4 +105,13 @@ while True:
                         msg = []
                         c.send(returnmsg)
                         print(f"Wyznaczono sterowanie o wartości: {u_i}")
+                case 5.0:
+                        AdaptiveDMC_contr.parameterize(Sample[1])
+                        u_i = AdaptiveDMC_contr.calc_U(Sample[3]-Sample[2])
+                        msg.append(50)
+                        msg.append(u_i)
+                        msg_size = len(msg)
+                        returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
+                        msg = []
+                        c.send(returnmsg)
             c.close()

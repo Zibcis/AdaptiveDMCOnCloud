@@ -146,6 +146,21 @@ while True:
             s.connect((IP_serv, port))
             s.send(msg)
             send_mess = 1
+        case 6:
+            plc_write(plc, GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE, u_i)
+            print(f"Wartość sterowania: {u_i}")
+            Start = time.time()
+            data.append(5)
+            data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE), 0))
+            data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_ADDRESS, REAL_SIZE), 0))
+            data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_zad_ADDRESSS, REAL_SIZE), 0))
+            data_size = len(data)
+            msg = struct.pack('<{}f'.format(data_size), *data)
+            data = []
+            s = socket.socket()
+            s.connect((IP_serv, port))
+            s.send(msg)
+            send_mess = 1
 
     if State != 65535 and send_mess == 1:
         time.sleep(0.5)
@@ -171,6 +186,11 @@ while True:
                 print(f"Wartość okresu próbkowania: {returndata[1]}")
                 print(f"Wartość sterowania: {returndata[2]}")
             case 40:
+                u_i = returndata[1]
+                stop = time.time()
+                procesing_time = stop - Start
+                time.sleep(TC - procesing_time)
+            case 50:
                 u_i = returndata[1]
                 stop = time.time()
                 procesing_time = stop - Start
