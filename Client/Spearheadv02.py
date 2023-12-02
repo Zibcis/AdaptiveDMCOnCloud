@@ -2,7 +2,7 @@ import socket
 import struct
 import time
 import snap7
-from Parameters import *
+from Client.Parameters import *
 from Picker import *
 from PLC_fun import *
 
@@ -146,7 +146,7 @@ while True:
             s.connect((IP_serv, port))
             s.send(msg)
             send_mess = 1
-        case 6:
+        case 7:
             plc_write(plc, GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE, u_i)
             print(f"Wartość sterowania: {u_i}")
             Start = time.time()
@@ -192,6 +192,8 @@ while True:
                 time.sleep(TC - procesing_time)
             case 50:
                 u_i = returndata[1]
+                if len(returndata) == 3:
+                    TC = returndata[2]
                 stop = time.time()
                 procesing_time = stop - Start
                 time.sleep(TC - procesing_time)

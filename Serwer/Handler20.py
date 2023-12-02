@@ -17,6 +17,7 @@ data = []
 msg = []
 value_of_jump = 0.0
 if_parametrized = 0
+only_one_time = 0;
 DMC_contr = Controller()
 AdaptiveDMC_contr = AdaptiveController()
 
@@ -106,10 +107,15 @@ while True:
                         c.send(returnmsg)
                         print(f"Wyznaczono sterowanie o wartości: {u_i}")
                 case 5.0:
-                        AdaptiveDMC_contr.parameterize(Sample[1])
-                        u_i = AdaptiveDMC_contr.calc_U(Sample[3]-Sample[2])
+                        AdaptiveDMC_contr.parameterize(Sample[2])
+                        u_i = AdaptiveDMC_contr.calc_U(Sample[2], Sample[3])
+                        print(AdaptiveDMC_contr.ke)
+                        print(AdaptiveDMC_contr.Ku)
+                        print(AdaptiveDMC_contr.du)
                         msg.append(50)
                         msg.append(u_i)
+                        if only_one_time ==0:
+                            msg.append(AdaptiveDMC_contr.Tp);
                         msg_size = len(msg)
                         returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
                         msg = []

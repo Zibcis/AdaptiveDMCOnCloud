@@ -1,36 +1,40 @@
-from RegulatorParametersContainer import *
+from Serwer.Controller.RegulatorParametersContainer import *
 import math
 class AdaptiveController:
 
     def __init__(self):
         self.ke = 0.0
         self.Ku = []
-        self.U = 0.0
+        self.U = 50.0
         self.du = []
+        for i in range(0,int(max(Hd))):
+            self.du.append(0.0)
         self.Tp = min(Tc)
         self.Hd_maks = int(max(Hd))
 
-    def parameterize(self, flow_rate):
-        prev, neks = self.find_me( flow_rate)  ## Szukam przedziału w którym znajduje się przepływ
-        self.ke = self.linear_interpolation( prev, neks, ke[prev], ke[neks], flow_rate )
+    def parameterize(self, actual_temp):
+        self.Ku.clear()
+        prev, neks = self.find_me(actual_temp)  ## Szukam przedziału w którym znajduje się przepływ
+        self.ke = self.linear_interpolation(T[prev], T[neks], ke[prev], ke[neks], actual_temp)
         for i in range(0,self.Hd_maks-1):
-            self.Ku.append(self.linear_interpolation( prev, neks, Ku[prev][i], Ku[neks][i], flow_rate))
+            self.Ku.append(self.linear_interpolation(T[prev], T[neks], Ku[prev][i], Ku[neks][i], actual_temp))
         return 0
 
-    def calc_U(Contr, ext_e):
+    def calc_U(self, PV, SP):
         sum = 0.0
-        for i in range(0, len(Contr.Ku)):
-            sum = sum + Contr.Ku[i] * Contr.du[i]
-        du = float(Contr.ke) * (ext_e) - sum
-        U = Contr.U + du
+        ext_e = SP - PV
+        for i in range(0, len(self.Ku)):
+            sum = sum + self.Ku[i] * self.du[i]
+        du = float(self.ke) * (ext_e) - sum
+        U = self.U + du
         if U > 100.0:
             U = 100.0
         if U < 15.0:
             U = 15.0
-        Contr.U = U
-        lent_du = len(Contr.du)
-        Contr.du.pop(lent_du - 1)
-        Contr.du.insert(0, du)
+        self.U = U
+        lent_du = len(self.du)
+        self.du.pop(lent_du - 1)
+        self.du.insert(0, du)
         return U
 
     def clear_contr(self):
@@ -40,14 +44,15 @@ class AdaptiveController:
         self.du.clear()
         return 0
 
-    def linear_interpolation(self, prev, neks, prev_value, neks_value, flow_rate):
-        value = prev_value + ((neks_value-prev_value)/(F[neks]-F[prev]))*(flow_rate-F[prev])
+    def linear_interpolation(self, prev, neks, prev_value, neks_value, actual_temp):
+        #value = prev_value + ((neks_value-prev_value)/(T[neks]-T[prev]))*(actual_temp-T[prev])
+        value = ((neks_value-prev_value)/(neks-prev))*actual_temp+((prev_value*neks-neks_value*prev)/(neks-prev))
         return value
 
-    def find_me(self, flow_rate):           ##Szukanie przedziału przepływu
+    def find_me(self, actual_temp):           ##Szukanie przedziału przepływu
         dist=[]
-        for F1 in F:
-            dist.append(abs(F1 - flow_rate))
+        for T1 in T:
+            dist.append(abs(T1 - actual_temp))
         ind1 = dist.index(min(dist))
         dist[ind1]=max(dist)*100
         ind2 = dist.index(min(dist))
@@ -60,8 +65,9 @@ class AdaptiveController:
         return prev, neks
 
 if __name__ == "__main__":
-    flow_rate = 1.5
+    flow_rate = 38.0
     Controller1 = AdaptiveController()
+    print(Controller1.find_me(flow_rate))
     Controller1.parameterize(flow_rate)
     print(Controller1.ke)
     print(Controller1.Ku)

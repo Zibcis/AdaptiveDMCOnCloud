@@ -2,9 +2,9 @@ import numpy as np
 from array import *
 from scipy.optimize import minimize
 import struct
-from Fop import *
-from FOPDT import *
-from DMCV2 import *
+from Serwer.Controller.Fop import *
+from Serwer.Controller.FOPDT import *
+from Serwer.Controller.DMCV2 import *
 #Funkcja do wyznaczenia parametrów modelu
 def ParametryzacjaRegulatora(Time,Samp):
     D = len(Samp)
@@ -38,8 +38,9 @@ def NastawyRegulatora(T0,T):
     Hp = np.around(T/Tp + T0/Tp)
     Hd = np.around((3*T)/Tp + T0/Tp)
     x = 0.0146/(1+(T0/T))
-    k= 0.85
-    alfa = x*(np.power(k,2)*Hp) 
+    k = 1.9 #0.85
+    alfa = x*(np.power(k,2)*Hp)
+    print(alfa)
     return Hc,Hw,Hp,Hd,alfa
 
 def unpack(data):
