@@ -38,7 +38,7 @@ def NastawyRegulatora(T0,T):
     Hp = np.around(T/Tp + T0/Tp)
     Hd = np.around((3*T)/Tp + T0/Tp)
     x = 0.0146/(1+(T0/T))
-    k = 1.9 #0.85
+    k =  0.26879#0.6009#2.549 #1.9 #0.85
     alfa = x*(np.power(k,2)*Hp)
     print(alfa)
     return Hc,Hw,Hp,Hd,alfa

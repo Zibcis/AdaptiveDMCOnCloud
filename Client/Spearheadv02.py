@@ -15,7 +15,7 @@ k = 0
 data = []
 only_one_time = [0, 0, 0, 0]
 send_mess = 0
-u_i = 0
+u_i = 78
 
 # Łączenie ze sterownikieniem
 plc = plc_connect()

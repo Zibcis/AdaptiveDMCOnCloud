@@ -51,7 +51,7 @@ while True:
                     print(f"Wysłano wartość inicjalizaci: {6.5}")
                 case 2.0:   #dodanie delty do sterowania - skok w otoczeniu punktu pracy
                     msg.append(20)
-                    value_of_jump = Sample[1]+3
+                    value_of_jump = Sample[1]+2
                     msg.append(value_of_jump)
                     msg_size = len(msg)
                     returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
@@ -71,7 +71,7 @@ while True:
                     Tc = reg_parameters[1]*0.1
                     Hc, Hw, Hp, Hd, alfa = NastawyRegulatora(reg_parameters[0], reg_parameters[1])
                     print(Hd)
-                    calculated_samples = FOPDT(reg_parameters[1], reg_parameters[0], reg_parameters[2]/3, int(Hp), int(Hd))
+                    calculated_samples = FOPDT(reg_parameters[1], reg_parameters[0], reg_parameters[2]/2, int(Hp), int(Hd))
                     ke, Ku = DMC_reg(calculated_samples, int(Hc), int(Hw), int(Hp), int(Hd), alfa)
                     print(ke)
                     print(Ku)

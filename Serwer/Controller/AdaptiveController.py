@@ -7,7 +7,7 @@ class AdaptiveController:
         self.Ku = []
         self.U = 50.0
         self.du = []
-        for i in range(0,int(max(Hd))):
+        for i in range(0, int(max(Hd))):
             self.du.append(0.0)
         self.Tp = min(Tc)
         self.Hd_maks = int(max(Hd))
