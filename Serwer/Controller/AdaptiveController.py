@@ -72,4 +72,3 @@ if __name__ == "__main__":
     print(Controller1.ke)
     print(Controller1.Ku)
     print(Controller1.Tp)
-

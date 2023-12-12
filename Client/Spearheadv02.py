@@ -3,8 +3,8 @@ import struct
 import time
 import snap7
 from Client.Parameters import *
-from Picker import *
-from PLC_fun import *
+from Client.Picker import *
+from Client.PLC_fun import *
 
 #Potrzebne dane               
 i = 0
