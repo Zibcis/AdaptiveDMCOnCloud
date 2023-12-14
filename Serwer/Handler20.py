@@ -109,9 +109,9 @@ while True:
                 case 5.0:
                         AdaptiveDMC_contr.parameterize(Sample[2])
                         u_i = AdaptiveDMC_contr.calc_U(Sample[2], Sample[3])
-                        print(AdaptiveDMC_contr.ke)
-                        print(AdaptiveDMC_contr.Ku)
-                        print(AdaptiveDMC_contr.du)
+                        #print(AdaptiveDMC_contr.ke)
+                        #print(AdaptiveDMC_contr.Ku)
+                        #print(AdaptiveDMC_contr.du)
                         msg.append(50)
                         msg.append(u_i)
                         if only_one_time ==0:
