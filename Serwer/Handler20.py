@@ -43,7 +43,7 @@ while True:
             match Sample[0]:
                 case 1.0:   #inicjalizacja - podjazd pod punkt pracy
                     msg.append(10)
-                    msg.append(40.0)
+                    msg.append(70.0)
                     msg_size = len(msg)
                     returnmsg = struct.pack('<{}f'.format(msg_size),*msg)
                     msg=[]
