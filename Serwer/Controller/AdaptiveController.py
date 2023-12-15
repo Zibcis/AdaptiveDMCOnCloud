@@ -5,7 +5,7 @@ class AdaptiveController:
     def __init__(self):
         self.ke = 0.0
         self.Ku = []
-        self.U = 50.0
+        self.U = 86.0
         self.du = []
         for i in range(0, int(max(Hd))):
             self.du.append(0.0)
@@ -16,7 +16,7 @@ class AdaptiveController:
         self.Ku.clear()
         prev, neks = self.find_me(actual_temp)  ## Szukam przedziału w którym znajduje się przepływ
         self.ke = self.linear_interpolation(T[prev], T[neks], ke[prev], ke[neks], actual_temp)
-        for i in range(0,self.Hd_maks-1):
+        for i in range(0, self.Hd_maks-1):
             self.Ku.append(self.linear_interpolation(T[prev], T[neks], Ku[prev][i], Ku[neks][i], actual_temp))
         return 0
 
