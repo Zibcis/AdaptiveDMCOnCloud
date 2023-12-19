@@ -38,7 +38,7 @@ def NastawyRegulatora(T0,T):
     Hp = np.around(T/Tp + T0/Tp)
     Hd = np.around((5*T)/Tp + T0/Tp)  ### Wydłużenie horyzontu dynamiki do 4-5 !!!! Było 3
     x = 0.0146/(1+(T0/T))
-    k =  9.80 #8.23 #5.66 #0.7225  #0.26879 #0.6009#2.549 #1.9 #0.85
+    k =  13 #9.80 #8.23 #5.66 #0.7225  #0.26879 #0.6009#2.549 #1.9 #0.85
     alfa = x*(np.power(k,2)*Hp)
     print(alfa)
     return Hc,Hw,Hp,Hd,alfa
