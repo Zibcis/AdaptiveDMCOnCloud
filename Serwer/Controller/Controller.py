@@ -13,7 +13,6 @@ class Controller:
     
     def calc_U(self, ext_e):
         sum = 0.0
-
         for i in range (0,len(self.Ku)):
             sum = sum + self.Ku[i] * self.du[i]
         du = float(self.ke) * (ext_e) - sum

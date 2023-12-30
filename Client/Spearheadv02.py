@@ -10,7 +10,7 @@ from Client.PLC_fun import *
 i = 0
 Samples = []
 Time = []
-TC = 5
+TC = 1.84
 k = 0
 data = []
 only_one_time = [0, 0, 0, 0]
