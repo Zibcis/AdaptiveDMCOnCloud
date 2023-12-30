@@ -1,4 +1,4 @@
-from Parameters import *
+from Client.Parameters import *
 import snap7
 
 def plc_connect():
@@ -18,5 +18,8 @@ def plc_write(plc, database, start_address, type, data):
         case 1:
             buffe = plc.db_read(database, start_address, type)
             snap7.util.set_bool(buffe, 0, 0, data)
+        case 2:
+             buffe = bytearray(type)
+             snap7.util.set_int(buffe, 0, data)
     plc.db_write(database, start_address, buffe)
     return 0
