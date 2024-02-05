@@ -147,27 +147,40 @@ while True:
             s.send(msg)
             send_mess = 1
         case 7:
-            read = plc.db_read(GLOBALDATA_DB, 82, BOOL_SIZE)
-            if  snap7.util.get_bool(read, 0, 5):
-                plc_write(plc, GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE, u_i)
-                print(f"Wartość sterowania: {u_i}")
-                Start = time.time()
-                data.append(5)
-                data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE), 0))
-                data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_ADDRESS, REAL_SIZE), 0))
-                data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_zad_ADDRESSS, REAL_SIZE), 0))
-                data_size = len(data)
-                msg = struct.pack('<{}f'.format(data_size), *data)
-                data = []
-                s = socket.socket()
-                s.connect((IP_serv, port))
-                s.send(msg)
-                send_mess = 1
+            read = plc.db_read(GLOBALDATA_DB, ST_HOLD_ADDRESS, BOOL_SIZE)
+            if snap7.util.get_bool(read, 0, STEROWANIE_CHMURA):
+                if snap7.util.get_bool(plc.db_read(GLOBALDATA_DB, SCENARIUSZ, BOOL_SIZE), 0, SET_POINT_CHANGE):
+                    Start = time.time()
+                    data.append(6)
+                    data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_zad_ADDRESSS + REAL_SIZE, REAL_SIZE), 0))
+                    print(data)
+                    data_size = len(data)
+                    msg = struct.pack('<{}f'.format(data_size), *data)
+                    data = []
+                    s = socket.socket()
+                    s.connect((IP_serv, port))
+                    s.send(msg)
+                    send_mess = 1
+                else:
+                    plc_write(plc, GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE, u_i)
+                    print(f"Wartość sterowania: {u_i}")
+                    Start = time.time()
+                    data.append(5)
+                    data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Valve_oppening_degree_ADDRESS, REAL_SIZE), 0))
+                    data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_ADDRESS, REAL_SIZE), 0))
+                    data.append(snap7.util.get_real(plc.db_read(GLOBALDATA_DB, Thout_zad_ADDRESSS, REAL_SIZE), 0))
+                    data_size = len(data)
+                    msg = struct.pack('<{}f'.format(data_size), *data)
+                    data = []
+                    s = socket.socket()
+                    s.connect((IP_serv, port))
+                    s.send(msg)
+                    send_mess = 1
 
     if State != 65535 and send_mess == 1:
         time.sleep(0.5)
         returnmsg = s.recv(50000)
-        send_mess=0
+        send_mess = 0
         rmsg_size = len(returnmsg)/4.0
         trmsg_size = int(rmsg_size)
         returndata = struct.unpack('<{}f'.format(trmsg_size),returnmsg)
@@ -199,6 +212,14 @@ while True:
                 stop = time.time()
                 procesing_time = stop - Start
                 time.sleep(TC - procesing_time)
+            case 60:
+                plc_write(plc, LOCALDMCCONTROLLERPARAM, TC_LOCAL_ADDRESS, REAL_SIZE, returndata[1])
+                plc_write(plc, LOCALDMCCONTROLLERPARAM, ke_LOCAL_ADDRESS, REAL_SIZE, returndata[2])
+                for i in range(0, 57):
+                    plc_write(plc, LOCALDMCCONTROLLERPARAM, KU_LOCAL_ADDRESS + REAL_SIZE*i, REAL_SIZE, returndata[3+i])
+                buffe = plc.db_read(GLOBALDATA_DB, SCENARIUSZ, BOOL_SIZE)
+                snap7.util.set_bool(buffe, 0, 1, 0)
+                plc.db_write(GLOBALDATA_DB, SCENARIUSZ, buffe)
 
 
 

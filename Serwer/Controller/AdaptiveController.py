@@ -12,6 +12,7 @@ class AdaptiveController:
         self.Tp = min(Tc)
         self.Hd_maks = int(max(Hd))
 
+
     def parameterize(self, actual_temp):
         self.Ku.clear()
         prev, neks = self.find_me(actual_temp)  ## Szukam przedziału w którym znajduje się przepływ

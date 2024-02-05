@@ -17,8 +17,9 @@ data = []
 msg = []
 value_of_jump = 0.0
 if_parametrized = 0
-only_one_time = 0;
+only_one_time = 0
 DMC_contr = Controller()
+LocalDMC_contr = AdaptiveController()
 AdaptiveDMC_contr = AdaptiveController()
 
 #Tworzenie gniazda serwera
@@ -29,7 +30,6 @@ s.bind(('', port))
 s.listen()
 
 while True:
-
             #Przyjecie połączenia
             c , addr = s.accept()
             print("Connection established")
@@ -114,8 +114,19 @@ while True:
                         #print(AdaptiveDMC_contr.du)
                         msg.append(50)
                         msg.append(u_i)
-                        if only_one_time ==0:
-                            msg.append(AdaptiveDMC_contr.Tp);
+                        if only_one_time == 0:
+                            msg.append(AdaptiveDMC_contr.Tp)
+                        msg_size = len(msg)
+                        returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
+                        msg = []
+                        c.send(returnmsg)
+                case 6.0:
+                        LocalDMC_contr.parameterize(Sample[1])
+                        msg.append(60)
+                        msg.append(LocalDMC_contr.Tp)
+                        msg.append(LocalDMC_contr.ke)
+                        for i in range(0, 57):
+                            msg.append(LocalDMC_contr.Ku[i])
                         msg_size = len(msg)
                         returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
                         msg = []
