@@ -5,7 +5,7 @@ class AdaptiveController:
     def __init__(self):
         self.ke = 0.0
         self.Ku = []
-        self.U = 54.0
+        self.U = 64.0
         self.du = []
         for i in range(0, int(max(Hd))):
             self.du.append(0.0)
