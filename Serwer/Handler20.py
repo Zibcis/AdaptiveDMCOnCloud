@@ -51,7 +51,8 @@ while True:
                     print(f"Wysłano wartość inicjalizaci: {6.5}")
                 case 2.0:   #dodanie delty do sterowania - skok w otoczeniu punktu pracy
                     msg.append(20)
-                    value_of_jump = Sample[1]+2
+                    du = 0.5
+                    value_of_jump = Sample[1]+du
                     msg.append(value_of_jump)
                     msg_size = len(msg)
                     returnmsg = struct.pack('<{}f'.format(msg_size), *msg)
@@ -66,12 +67,13 @@ while True:
                     print(Samples)
                     print(Time)
                     reg_parameters = ParametryzacjaRegulatora(Time, Samples)
+                    print(reg_parameters)
                     Time.clear()
                     Samples.clear()
                     Tc = reg_parameters[1]*0.1
                     Hc, Hw, Hp, Hd, alfa = NastawyRegulatora(reg_parameters[0], reg_parameters[1])
                     print(Hd)
-                    calculated_samples = FOPDT(reg_parameters[1], reg_parameters[0], reg_parameters[2]/2, int(Hp), int(Hd))
+                    calculated_samples = FOPDT(reg_parameters[1], reg_parameters[0], reg_parameters[2]/du, int(Hp), int(Hd))
                     ke, Ku = DMC_reg(calculated_samples, int(Hc), int(Hw), int(Hp), int(Hd), alfa)
                     print(ke)
                     print(Ku)
@@ -107,7 +109,7 @@ while True:
                         c.send(returnmsg)
                         print(f"Wyznaczono sterowanie o wartości: {u_i}")
                 case 5.0:
-                        AdaptiveDMC_contr.parameterize(Sample[2])
+                        AdaptiveDMC_contr.parameterize(Sample[3])
                         u_i = AdaptiveDMC_contr.calc_U(Sample[2], Sample[3])
                         #print(AdaptiveDMC_contr.ke)
                         #print(AdaptiveDMC_contr.Ku)
@@ -121,7 +123,7 @@ while True:
                         msg = []
                         c.send(returnmsg)
                 case 6.0:
-                        LocalDMC_contr.parameterize(Sample[1])
+                        LocalDMC_contr.parameterize(Sample[3])
                         msg.append(60)
                         msg.append(LocalDMC_contr.Tp)
                         msg.append(LocalDMC_contr.ke)

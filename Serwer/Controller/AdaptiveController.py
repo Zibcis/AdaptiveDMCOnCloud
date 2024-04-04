@@ -5,7 +5,7 @@ class AdaptiveController:
     def __init__(self):
         self.ke = 0.0
         self.Ku = []
-        self.U = 64.0
+        self.U = 86.0
         self.du = []
         for i in range(0, int(max(Hd))):
             self.du.append(0.0)
@@ -19,11 +19,14 @@ class AdaptiveController:
         self.ke = self.linear_interpolation(T[prev], T[neks], ke[prev], ke[neks], actual_temp)
         for i in range(0, self.Hd_maks-1):
             self.Ku.append(self.linear_interpolation(T[prev], T[neks], Ku[prev][i], Ku[neks][i], actual_temp))
+        print(self.ke)
+        print(self.Ku)
         return 0
 
     def calc_U(self, PV, SP):
         sum = 0.0
         ext_e = SP - PV
+        print(ext_e)
         for i in range(0, len(self.Ku)):
             sum = sum + self.Ku[i] * self.du[i]
         du = float(self.ke) * (ext_e) - sum
@@ -36,6 +39,7 @@ class AdaptiveController:
         lent_du = len(self.du)
         self.du.pop(lent_du - 1)
         self.du.insert(0, du)
+        print(self.du)
         return U
 
     def clear_contr(self):

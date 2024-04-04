@@ -13,9 +13,9 @@ Time = []
 TC = 1.84
 k = 0
 data = []
-only_one_time = [0, 0, 0, 0]
+only_one_time = [0, 0, 0, 0, 0]
 send_mess = 0
-u_i = 64
+u_i = 86
 
 # Łączenie ze sterownikieniem
 plc = plc_connect()
@@ -218,7 +218,7 @@ while True:
                 for i in range(0, 57):
                     plc_write(plc, LOCALDMCCONTROLLERPARAM, KU_LOCAL_ADDRESS + REAL_SIZE*i, REAL_SIZE, returndata[3+i])
                 buffe = plc.db_read(GLOBALDATA_DB, SCENARIUSZ, BOOL_SIZE)
-                snap7.util.set_bool(buffe, 0, 1, 0)
+                snap7.util.set_bool(buffe, 0, 2, 0)
                 plc.db_write(GLOBALDATA_DB, SCENARIUSZ, buffe)
 
 
